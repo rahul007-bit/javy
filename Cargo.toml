@@ -1,11 +1,12 @@
 [workspace]
 members = [
-  "crates/quickjs-wasm-sys",
-  "crates/quickjs-wasm-rs",
-  "crates/javy",
+#  "crates/quickjs-wasm-sys",
+#  "crates/quickjs-wasm-rs",
+#  "crates/javy",
   "crates/apis",
   "crates/core",
   "crates/cli",
+  "crates/serve",
 ]
 resolver = "2"
 
@@ -22,7 +23,8 @@ wasmtime-wasi = "16"
 wasi-common = "16"
 anyhow = "1.0"
 once_cell = "1.19"
-javy = { path = "crates/javy", version = "2.2.0-alpha.1" }
+javy = {version = "2.2.0-alpha.1"}
+#javy = { path = "crates/javy", version = "2.2.0-alpha.1" }
 
 [profile.release]
 lto = true

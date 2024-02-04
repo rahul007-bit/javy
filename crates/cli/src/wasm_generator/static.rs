@@ -58,7 +58,7 @@ pub fn generate(js: &JS, exports: Vec<Export>, no_source_compression: bool) -> R
         )
     };
 
-    let realloc_export = realloc.id();
+    // let realloc_export = realloc.id();
     let free_export = free.id();
     let invoke_export = invoke.id();
 
@@ -76,7 +76,7 @@ pub fn generate(js: &JS, exports: Vec<Export>, no_source_compression: bool) -> R
     }
 
     // We no longer need these exports so remove them.
-    module.exports.delete(realloc_export);
+    // module.exports.delete(realloc_export);
     module.exports.delete(free_export);
     module.exports.delete(invoke_export);
 
@@ -115,6 +115,7 @@ fn export_exported_js_functions(
 ) {
     let ptr_local = module.locals.add(ValType::I32);
     for export in js_exports {
+        println!("Exporting JS function: {}", export.js);
         // For each JS function export, add an export that copies the name of the function into memory and invokes it.
         let js_export_bytes = export.js.as_bytes();
         let js_export_len: i32 = js_export_bytes.len().try_into().unwrap();

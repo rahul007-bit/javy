@@ -15,7 +15,8 @@ use std::io::Write;
 use structopt::StructOpt;
 use wasm_generator::dynamic as dynamic_generator;
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     let cmd = Command::from_args();
 
     match &cmd {
@@ -34,6 +35,12 @@ fn main() -> Result<()> {
                 static_generator::generate(&js, exports, opts.no_source_compression)?
             };
             fs::write(&opts.output, wasm)?;
+            Ok(())
+        }
+        Command::Serve(opts) => {
+            serve::WorkerCtx::new(opts.input())?
+                .serve(opts.addr())
+                .await?;
             Ok(())
         }
     }

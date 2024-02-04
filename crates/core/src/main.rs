@@ -10,6 +10,8 @@ mod runtime;
 
 const FUNCTION_MODULE_NAME: &str = "function.mjs";
 
+static mut COMPILE_SRC_RET_AREA: [u32; 2] = [0; 2];
+
 static mut RUNTIME: OnceCell<Runtime> = OnceCell::new();
 static mut BYTECODE: OnceCell<Vec<u8>> = OnceCell::new();
 
@@ -36,6 +38,19 @@ fn main() {
     let bytecode = unsafe { BYTECODE.take().unwrap() };
     let runtime = unsafe { RUNTIME.take().unwrap() };
     execution::run_bytecode(&runtime, &bytecode);
+}
+
+#[export_name = "run_entrypoint"]
+pub unsafe fn run_entrypoint(input_ptr: *mut u8, input_len: usize) -> *const u32 {
+    let runtime = unsafe { RUNTIME.take().unwrap() };
+    let bytecode = unsafe { BYTECODE.take().unwrap() };
+    let input = str::from_utf8(unsafe { slice::from_raw_parts(input_ptr, input_len) }).unwrap();
+    let result = execution::invoke_entrypoint(&runtime, &bytecode, input.to_string()).unwrap();
+    let result_len = result.len();
+    let result_ptr = Box::leak(result.into_boxed_slice()).as_ptr();
+    COMPILE_SRC_RET_AREA[0] = result_ptr as u32;
+    COMPILE_SRC_RET_AREA[1] = result_len.try_into().unwrap();
+    COMPILE_SRC_RET_AREA.as_ptr()
 }
 
 // Removed in post-processing.

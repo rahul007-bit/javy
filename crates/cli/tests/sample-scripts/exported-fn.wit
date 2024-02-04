@@ -1,7 +1,0 @@
-package local:test;
-
-world exported-fn {
-  export foo: func();
-  export bar: func();
-  export foo-bar: func();
-}

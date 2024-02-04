@@ -262,3 +262,40 @@ class Response {
     return this.body;
   }
 }
+let handlerFunction;
+globalThis.addEventListener = (_eventName, handler) => {
+  handlerFunction = handler;
+};
+
+const requestToHandler = (input) => {
+  const request = new Request(input);
+  const event = {
+    request,
+    response: {},
+    respondWith(res) {
+      this.response = res;
+    },
+  };
+
+  try {
+    handlerFunction(event);
+
+    Promise.resolve(event.response)
+      .then((res) => {
+        result = {
+          data: res.body,
+          headers: res.headers.headers,
+          status: res.status,
+        };
+      })
+      .catch((err) => {
+        error = `err: \n${err}`;
+      });
+  } catch (err) {
+    error = `err: ${err}\n${err.stack}`;
+  }
+};
+
+globalThis.entrypoint = requestToHandler;
+globalThis.result = {};
+globalThis.error = null;

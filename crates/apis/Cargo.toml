@@ -18,4 +18,4 @@ text_encoding = []
 [dependencies]
 anyhow = { workspace = true }
 fastrand = { version = "2.0.1", optional = true }
-javy = { workspace = true }
+javy = "2.2.0"
